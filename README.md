@@ -25,6 +25,7 @@
 
 ## About
 
+(GUI branch: EXPERIMENTAL)
 A **Dria Compute Node** is a unit of computation within the Dria Knowledge Network. It's purpose is to process tasks given by the **Dria Admin Node**, and receive rewards for providing correct results.
 
 To get started, [setup](#setup) your envrionment and then see [usage](#usage) to run the node.
