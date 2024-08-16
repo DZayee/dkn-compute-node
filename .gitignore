@@ -4,3 +4,4 @@
 .vscode
 .DS_Store
 /qdrant_storage
+.metadata
