@@ -343,6 +343,7 @@ To create a flamegraph of the application, do:
 ```sh
 make profile
 ```
+```great
 
 This will create a profiling build that inherits `release` mode, except with debug information.
 
