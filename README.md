@@ -74,7 +74,7 @@ cd dkn-compute-node
 ### 2. Prepare Environment Variables
 
 Dria Compute Node makes use of several environment variables. Create a `.env` file, and copy the environment variables as given in [.env.example](./.env.example). We will fill out the missing parts in a moment.
-
+```creat file .evn (touch .evn)
 ```sh
 cp .env.example .env
 ```
