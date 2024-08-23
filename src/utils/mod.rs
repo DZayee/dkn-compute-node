@@ -1,5 +1,6 @@
 pub mod crypto;
 pub mod filter;
+pub mod metrics;
 pub mod payload;
 
 use std::time::{Duration, SystemTime};

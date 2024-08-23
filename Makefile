@@ -13,6 +13,10 @@ launch:
 run:
 		RUST_LOG=none,dkn_compute=info cargo run
 
+.PHONY: metrics #          | Run with INFO log-level
+metrics:
+		RUST_LOG=libp2p=info,dkn_compute=info,[ConnectionHandler::poll]=trace,[NetworkBehaviour::poll]=trace cargo run --features=metrics
+
 .PHONY: debug #        | Run with DEBUG log-level with INFO log-level workflows
 debug:
 		RUST_LOG=warn,dkn_compute=debug,ollama_workflows=info cargo run

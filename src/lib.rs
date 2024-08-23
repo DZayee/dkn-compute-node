@@ -14,3 +14,4 @@ pub const DRIA_COMPUTE_NODE_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 pub use config::DriaComputeNodeConfig;
 pub use node::DriaComputeNode;
+pub use utils::metrics::{serve_metrics_server, setup_tracing};

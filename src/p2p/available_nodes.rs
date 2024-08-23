@@ -133,13 +133,17 @@ where
 
 #[cfg(test)]
 mod tests {
+    use tracing_subscriber::EnvFilter;
+
     use super::*;
 
     #[tokio::test]
     #[ignore = "run this manually"]
     async fn test_get_available_nodes() {
         std::env::set_var("RUST_LOG", "info");
-        let _ = env_logger::try_init();
+        tracing_subscriber::fmt()
+            .with_env_filter(EnvFilter::from_default_env())
+            .init();
 
         let available_nodes = AvailableNodes::get_available_nodes().await.unwrap();
         println!("{:#?}", available_nodes);

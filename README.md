@@ -340,7 +340,13 @@ make format # rustfmt
 
 ### Profiling
 
-We would like to profile both CPU and Memory usage.
+We have several profiling methods:
+
+- CPU
+- Memory
+- Metrics
+
+#### CPU Profiling
 
 To create a [flamegraph](https://crates.io/crates/flamegraph) of the application, do:
 
@@ -350,11 +356,33 @@ make profile-cpu
 
 This will create a profiling build that inherits `release` mode, except with debug information.
 
-To profile memory usage, we make use of [cargo-instruments](https://crates.io/crates/cargo-instruments).
-
 > [!NOTE]
 >
 > CPU profiling may require super-user access.
+
+#### Memory Profiling
+
+To profile memory usage, we make use of [cargo-instruments](https://crates.io/crates/cargo-instruments). This has only been tested in MacOS.
+
+```sh
+make profile-mem
+```
+
+#### Running with Metrics
+
+We also make use of [libp2p-metrics](https://github.com/libp2p/rust-libp2p/blob/master/examples/metrics/README.md) feature. First, start the required services in background with:
+
+```sh
+docker compose -f compose.metrics.yml up -d
+```
+
+Then, run the node with:
+
+```sh
+make metrics
+```
+
+This will enable some features in the background, along with specific log levels, so that metrics are collected. A Jaeger UI is live at <http://localhost:16686>.
 
 ## License
 

@@ -1,4 +1,5 @@
 use libp2p::StreamProtocol;
+
 pub const DRIA_PROTO_NAME: StreamProtocol = StreamProtocol::new("/dria/kad/1.0.0");
 
 mod behaviour;

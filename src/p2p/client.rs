@@ -1,4 +1,5 @@
 use crate::p2p::AvailableNodes;
+use crate::setup_tracing;
 use libp2p::futures::StreamExt;
 use libp2p::gossipsub::{
     Message, MessageAcceptance, MessageId, PublishError, SubscriptionError, TopicHash,
@@ -13,6 +14,7 @@ use tokio::time::Duration;
 use tokio::time::Instant;
 
 use super::{DriaBehaviour, DriaBehaviourEvent, DRIA_PROTO_NAME};
+use prometheus_client::registry::Registry;
 
 /// Underlying libp2p client.
 pub struct P2PClient {
@@ -20,6 +22,8 @@ pub struct P2PClient {
     /// Peer count for (All, Mesh).
     peer_count: (usize, usize),
     peer_last_refreshed: Instant,
+
+    pub metric_registry: Registry,
 }
 
 /// Number of seconds before an idle connection is closed.
@@ -35,6 +39,9 @@ impl P2PClient {
         listen_addr: Multiaddr,
         available_nodes: &AvailableNodes,
     ) -> Result<Self, String> {
+        // setup_tracing().map_err(|e| e.to_string())?;
+        let mut metric_registry = Registry::default();
+
         // this is our peerId
         let node_peerid = keypair.public().to_peer_id();
         log::info!("Compute node peer address: {}", node_peerid);
@@ -50,6 +57,7 @@ impl P2PClient {
             .with_quic()
             .with_relay_client(noise::Config::new, yamux::Config::default)
             .map_err(|e| e.to_string())?
+            .with_bandwidth_metrics(&mut metric_registry)
             .with_behaviour(|key, relay_behavior| Ok(DriaBehaviour::new(key, relay_behavior)))
             .map_err(|e| e.to_string())?
             .with_swarm_config(|c| {
@@ -116,6 +124,7 @@ impl P2PClient {
             swarm,
             peer_count: (0, 0),
             peer_last_refreshed: Instant::now(),
+            metric_registry,
         })
     }
 

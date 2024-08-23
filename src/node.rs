@@ -1,7 +1,3 @@
-use libp2p::{gossipsub, Multiaddr};
-use std::{str::FromStr, time::Duration};
-use tokio_util::sync::CancellationToken;
-
 use crate::{
     config::DriaComputeNodeConfig,
     errors::NodeResult,
@@ -9,6 +5,9 @@ use crate::{
     p2p::{AvailableNodes, P2PClient, P2PMessage},
     utils::crypto::secret_to_keypair,
 };
+use libp2p::{gossipsub, Multiaddr};
+use std::{str::FromStr, time::Duration};
+use tokio_util::sync::CancellationToken;
 
 /// Number of seconds between refreshing the Admin RPC PeerIDs from Dria server.
 const RPC_PEER_ID_REFRESH_INTERVAL_SECS: u64 = 30;
@@ -272,12 +271,15 @@ mod tests {
     use crate::{p2p::P2PMessage, DriaComputeNode, DriaComputeNodeConfig};
     use std::env;
     use tokio_util::sync::CancellationToken;
+    use tracing_subscriber::EnvFilter;
 
     #[tokio::test]
     #[ignore = "run this manually"]
     async fn test_publish_message() {
         env::set_var("RUST_LOG", "info");
-        let _ = env_logger::try_init();
+        tracing_subscriber::fmt()
+            .with_env_filter(EnvFilter::from_default_env())
+            .init();
 
         // create node
         let cancellation = CancellationToken::new();

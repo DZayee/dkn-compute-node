@@ -1,5 +1,6 @@
-use dkn_compute::{DriaComputeNode, DriaComputeNodeConfig};
+use dkn_compute::{serve_metrics_server, setup_tracing, DriaComputeNode, DriaComputeNodeConfig};
 use tokio_util::sync::CancellationToken;
+use tracing_subscriber::EnvFilter;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -7,9 +8,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         log::warn!("Could not load .env file: {}", e);
     }
 
-    env_logger::builder()
-        .format_timestamp(Some(env_logger::TimestampPrecision::Millis))
-        .init();
+    // tracing_subscriber::fmt()
+    //     .with_env_filter(EnvFilter::from_default_env())
+    //     .init();
+    setup_tracing()?;
     log::info!(
         "Initializing Dria Compute Node (version {})",
         dkn_compute::DRIA_COMPUTE_NODE_VERSION
@@ -33,6 +35,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     log::error!("Node launch error: {}", err);
                     panic!("Node failed.")
                 };
+
+                tokio::spawn(serve_metrics_server(node.p2p.metric_registry));
             }
             Err(err) => {
                 log::error!("Node setup error: {}", err);
@@ -40,8 +44,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     });
-
-    // TODO: add auto-cancel for profiling
 
     // add cancellation check
     tokio::spawn(async move {
